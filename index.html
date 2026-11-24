@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RepoMap — Interactive GitHub Tree</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="widget-card">
+    <div class="widget-header">
+      <div class="repo-badge">
+        <span class="dot"></span>
+        <a id="repo-link" href="#" target="_blank" rel="noopener">Loading repository...</a>
+      </div>
+      <div class="controls">
+        <button id="toggle-builder" class="text-btn" title="Usar con tu repositorio">Use in your repository</button>
+        <button id="zoom-out" title="Alejar (-)">−</button>
+        <span id="zoom-label">100%</span>
+        <button id="zoom-in" title="Acercar (+)">+</button>
+        <button id="reset-view" title="Centrar vista">⟲</button>
+      </div>
+    </div>
+
+    <div id="builder-panel" class="builder-panel hidden">
+      <form id="repo-form" class="builder-row">
+        <input id="input-user" type="text" placeholder="Usuario (ej: not2negative)" required />
+        <span>/</span>
+        <input id="input-repo" type="text" placeholder="Repositorio (ej: cybersecurity-writeups)" required />
+        <input id="input-branch" type="text" placeholder="Rama (main)" value="main" class="branch-input" />
+        <button type="submit" class="primary-btn">Load</button>
+      </form>
+      <div class="snippet-row">
+        <input id="markdown-output" type="text" readonly />
+        <button id="copy-md" type="button" class="text-btn">Copy Markdown</button>
+      </div>
+    </div>
+
+    <div id="viewport" class="viewport">
+      <div id="canvas" class="canvas">
+        <div id="tree-container" class="tree-container"></div>
+      </div>
+    </div>
+
+    <div class="widget-footer">
+      <span>Drag to move · Click any node to open it on GitHub</span>
+      <span id="stats"></span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
