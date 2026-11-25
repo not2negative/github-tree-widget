@@ -110,9 +110,10 @@ class handler(BaseHTTPRequestHandler):
                 y = 36 + i * line_height
                 color = "#79c0ff" if is_dir else "#58a6ff"
                 weight = "bold" if is_dir else "normal"
+                b_str_fixed = b_str.replace(" ", "\u00a0")
                 left_text = (
-                    f'<tspan fill="#7d8590">{html.escape(b_str)}</tspan>'
-                    f'{html.escape(icon)} '
+                    f'<tspan fill="#7d8590">{html.escape(b_str_fixed)}</tspan>'
+                    f'{html.escape(icon)}\u00a0'
                     f'<tspan fill="{color}" font-weight="{weight}">{html.escape(label)}</tspan>'
                 )
                 desc_svg = (
@@ -123,7 +124,7 @@ class handler(BaseHTTPRequestHandler):
 
             svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="840" height="{height}" viewBox="0 0 840 {height}">
   <rect width="840" height="{height}" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" xml:space="preserve">
     {"".join(svg_lines)}
   </g>
 </svg>'''
@@ -131,7 +132,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
             self.send_header("Content-Security-Policy", "default-src 'none'; sandbox")
             self.send_header("X-Content-Type-Options", "nosniff")
-            self.send_header("Cache-Control", "public, s-maxage=600, stale-while-revalidate=300")
+            self.send_header("Cache-Control", "public, s-maxage=60, stale-while-revalidate=30")
             self.end_headers()
             self.wfile.write(svg.encode("utf-8"))
         except Exception as e:
