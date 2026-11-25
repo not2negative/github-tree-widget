@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,20 +14,20 @@
         <a id="repo-link" href="#" target="_blank" rel="noopener">Loading repository...</a>
       </div>
       <div class="controls">
-        <button id="toggle-builder" class="text-btn" title="Usar con tu repositorio">Use in your repository</button>
-        <button id="zoom-out" title="Alejar (-)">−</button>
+        <button id="toggle-builder" class="text-btn" title="Use on your repository">Embed</button>
+        <button id="zoom-out" title="Zoom out (-)">−</button>
         <span id="zoom-label">100%</span>
-        <button id="zoom-in" title="Acercar (+)">+</button>
-        <button id="reset-view" title="Centrar vista">⟲</button>
+        <button id="zoom-in" title="Zoom in (+)">+</button>
+        <button id="reset-view" title="Reset view">⟲</button>
       </div>
     </div>
 
     <div id="builder-panel" class="builder-panel hidden">
       <form id="repo-form" class="builder-row">
-        <input id="input-user" type="text" placeholder="Usuario (ej: not2negative)" required />
+        <input id="input-user" type="text" placeholder="Username (e.g. not2negative)" required />
         <span>/</span>
-        <input id="input-repo" type="text" placeholder="Repositorio (ej: cybersecurity-writeups)" required />
-        <input id="input-branch" type="text" placeholder="Rama (main)" value="main" class="branch-input" />
+        <input id="input-repo" type="text" placeholder="Repository (e.g. cybersecurity-writeups)" required />
+        <input id="input-branch" type="text" placeholder="Branch (main)" value="main" class="branch-input" />
         <button type="submit" class="primary-btn">Load</button>
       </form>
       <div class="snippet-row">
@@ -43,7 +43,7 @@
     </div>
 
     <div class="widget-footer">
-      <span>Drag to move · Click any node to open it on GitHub</span>
+      <span>Drag to pan · Click any node to open on GitHub</span>
       <span id="stats"></span>
     </div>
   </div>

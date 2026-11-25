@@ -78,8 +78,8 @@ document.getElementById("toggle-builder").addEventListener("click", () => {
 document.getElementById("copy-md").addEventListener("click", async () => {
   await navigator.clipboard.writeText(mdOutput.value);
   const btn = document.getElementById("copy-md");
-  btn.textContent = "Copied to your clipboard";
-  setTimeout(() => (btn.textContent = "Copiar Markdown"), 1800);
+  btn.textContent = "Copied!";
+  setTimeout(() => (btn.textContent = "Copy Markdown"), 1800);
 });
 
 document.getElementById("repo-form").addEventListener("submit", (e) => {
@@ -89,7 +89,7 @@ document.getElementById("repo-form").addEventListener("submit", (e) => {
   const b = document.getElementById("input-branch").value.trim() || "main";
 
   if (!USER_RE.test(u) || !REPO_RE.test(r) || !REPO_RE.test(b)) {
-    alert("Usuario, repositorio o rama con formato inválido.");
+    alert("Invalid username, repository, or branch format.");
     return;
   }
 
@@ -104,7 +104,7 @@ document.getElementById("repo-form").addEventListener("submit", (e) => {
 function updateSnippet() {
   const origin = window.location.origin;
   const qs = `user=${encodeURIComponent(USER)}&repo=${encodeURIComponent(REPO)}&branch=${encodeURIComponent(BRANCH)}`;
-  mdOutput.value = `[![RepoMap](${origin}/api/svg?${qs})](${origin}/?${qs})`;
+  mdOutput.value = `[![Repository Map](${origin}/api/svg?${qs})](${origin}/?${qs})`;
 }
 
 function encodePath(path) {
@@ -183,7 +183,7 @@ function renderNode(node, metaItems, prefix = "", isLast = true, isRoot = true) 
 
 async function loadRepo() {
   if (!USER_RE.test(USER) || !REPO_RE.test(REPO) || !REPO_RE.test(BRANCH) || REPO === ".." || BRANCH === "..") {
-    container.textContent = "Parámetros de repositorio inválidos.";
+    container.textContent = "Invalid repository parameters.";
     return;
   }
 
@@ -202,14 +202,14 @@ async function loadRepo() {
       fetch(`https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/.repomap.json`)
     ]);
 
-    if (!treeRes.ok) throw new Error("Repositorio no encontrado o límite de API alcanzado");
+    if (!treeRes.ok) throw new Error("Repository not found or API rate limit exceeded");
     const treeData = await treeRes.json();
     const meta = metaRes.ok ? await metaRes.json() : { ignore: [".repomap.json", ".gitkeep"], items: {} };
 
     const root = buildHierarchy(treeData.tree || [], meta.ignore || [".repomap.json", ".gitkeep"]);
     container.innerHTML = "";
     renderNode(root, meta.items || {});
-    document.getElementById("stats").textContent = `${(treeData.tree || []).length} elementos`;
+    document.getElementById("stats").textContent = `${(treeData.tree || []).length} items`;
     zoomIdx = 1;
     panX = 0;
     panY = 0;

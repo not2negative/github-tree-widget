@@ -19,7 +19,7 @@ def fetch_json(url, max_bytes=524288):
     with urlopen(req, timeout=8) as res:
         raw = res.read(max_bytes + 1)
         if len(raw) > max_bytes:
-            raise ValueError("Response exceeds the maximum permitted size")
+            raise ValueError("Response exceeds maximum allowed size")
         return json.loads(raw.decode("utf-8"))
 
 class handler(BaseHTTPRequestHandler):
@@ -43,9 +43,9 @@ class handler(BaseHTTPRequestHandler):
         branch = query.get("branch", ["main"])[0]
 
         if not USER_RE.match(user) or not REPO_RE.match(repo) or not REPO_RE.match(branch):
-            return self.send_svg_error("Parámetros inválidos (user, repo o branch)")
+            return self.send_svg_error("Invalid parameters (user, repo, or branch)")
         if repo in (".", "..") or branch in (".", ".."):
-            return self.send_svg_error("Ruta no permitida")
+            return self.send_svg_error("Path not allowed")
 
         try:
             tree_data = fetch_json(
@@ -101,7 +101,7 @@ class handler(BaseHTTPRequestHandler):
             walk(root)
 
             if len(filtered) + 1 > MAX_ROWS:
-                rows.append(("└── ", "⋯", f"... (+{len(filtered) + 1 - MAX_ROWS} elementos)", False, ""))
+                rows.append(("└── ", "⋯", f"... (+{len(filtered) + 1 - MAX_ROWS} items)", False, ""))
 
             line_height = 26
             height = max(120, len(rows) * line_height + 44)
