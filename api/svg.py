@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, quote
 from urllib.request import urlopen, Request
 import json
 import html
@@ -41,6 +41,7 @@ class handler(BaseHTTPRequestHandler):
         user = query.get("user", ["not2negative"])[0]
         repo = query.get("repo", ["cybersecurity-writeups"])[0]
         branch = query.get("branch", ["main"])[0]
+        row_param = query.get("row", [None])[0]
 
         if not USER_RE.match(user) or not REPO_RE.match(repo) or not REPO_RE.match(branch):
             return self.send_svg_error("Invalid parameters (user, repo, or branch)")
@@ -93,20 +94,55 @@ class handler(BaseHTTPRequestHandler):
                 label = f"{node['name']}/" if node["type"] == "tree" else node["name"]
                 raw_desc = str(custom.get("description", ""))[:75]
                 desc = f"# {raw_desc}" if raw_desc else ""
-                rows.append((branch_str, icon, label, node["type"] == "tree", desc))
+                rows.append((branch_str, icon, label, node["type"] == "tree", desc, node["path"]))
                 next_prefix = "" if is_root else prefix + ("    " if is_last else "│   ")
                 for idx, child in enumerate(node["children"]):
                     walk(child, next_prefix, idx == len(node["children"]) - 1, False)
 
             walk(root)
 
+            if row_param is not None:
+                idx = int(row_param)
+                if idx < 0 or idx >= len(rows):
+                    svg = '<svg xmlns="http://www.w3.org/2000/svg" width="840" height="1"></svg>'
+                else:
+                    b_str, icon, label, is_dir, desc, path = rows[idx]
+                    is_first = idx == 0
+                    is_last = idx == len(rows) - 1
+                    h = 34 if (is_first or is_last) else 26
+                    y = 24 if is_first else 18
+                    color = "#79c0ff" if is_dir else "#58a6ff"
+                    weight = "bold" if is_dir else "normal"
+                    b_str_fixed = b_str.replace(" ", "\u00a0")
+                    left_text = (
+                        f'<tspan fill="#7d8590">{html.escape(b_str_fixed)}</tspan>'
+                        f'{html.escape(icon)}\u00a0'
+                        f'<tspan fill="{color}" font-weight="{weight}">{html.escape(label)}</tspan>'
+                    )
+                    desc_svg = (
+                        f'<text x="430" y="{y}" fill="#7d8590" font-size="13">{html.escape(desc)}</text>'
+                        if desc else ""
+                    )
+                    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="840" height="{h}" viewBox="0 0 840 {h}">
+  <rect width="840" height="{h}" fill="#0d1117"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" xml:space="preserve">
+    <text x="24" y="{y}" font-size="14">{left_text}</text>{desc_svg}
+  </g>
+</svg>'''
+                self.send_response(200)
+                self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
+                self.send_header("Cache-Control", "public, s-maxage=60, stale-while-revalidate=30")
+                self.end_headers()
+                self.wfile.write(svg.encode("utf-8"))
+                return
+
             if len(filtered) + 1 > MAX_ROWS:
-                rows.append(("└── ", "⋯", f"... (+{len(filtered) + 1 - MAX_ROWS} items)", False, ""))
+                rows.append(("└── ", "⋯", f"... (+{len(filtered) + 1 - MAX_ROWS} items)", False, "", ""))
 
             line_height = 26
             height = max(120, len(rows) * line_height + 44)
             svg_lines = []
-            for i, (b_str, icon, label, is_dir, desc) in enumerate(rows):
+            for i, (b_str, icon, label, is_dir, desc, _) in enumerate(rows):
                 y = 36 + i * line_height
                 color = "#79c0ff" if is_dir else "#58a6ff"
                 weight = "bold" if is_dir else "normal"
