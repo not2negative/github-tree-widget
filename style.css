@@ -16,20 +16,28 @@
   padding: 0;
 }
 
-body {
+html, body {
+  height: 100%;
+  overflow: hidden;
   background: var(--bg-page);
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 16px;
+  padding: 12px;
 }
 
 .widget-card {
   width: 100%;
   max-width: 920px;
+  height: 100%;
+  max-height: 460px;
+  display: flex;
+  flex-direction: column;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -44,6 +52,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .repo-badge {
@@ -99,6 +108,12 @@ body {
   cursor: not-allowed;
 }
 
+.controls .text-btn {
+  width: auto;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
 #zoom-label {
   font-size: 12px;
   color: var(--text-muted);
@@ -107,8 +122,61 @@ body {
   font-family: monospace;
 }
 
+.builder-panel {
+  background: #161b22;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.builder-panel.hidden {
+  display: none;
+}
+
+.builder-row, .snippet-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.builder-panel input {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: monospace;
+  flex: 1;
+}
+
+.builder-panel .branch-input {
+  max-width: 110px;
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.1);
+}
+
 .viewport {
-  height: 360px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
   position: relative;
   cursor: grab;
@@ -123,10 +191,9 @@ body {
 
 .canvas {
   padding: 24px;
-  transform-origin: top left;
+  transform-origin: center center;
   transition: transform 0.15s ease-out;
   display: inline-block;
-  min-width: 100%;
 }
 
 .canvas.dragging {
@@ -207,59 +274,5 @@ body {
   color: var(--text-muted);
   display: flex;
   justify-content: space-between;
-}
-
-.controls .text-btn {
-  width: auto;
-  padding: 0 10px;
-  font-size: 12px;
-}
-
-.builder-panel {
-  background: #161b22;
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.builder-panel.hidden {
-  display: none;
-}
-
-.builder-row, .snippet-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.builder-panel input {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-main);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: monospace;
-  flex: 1;
-}
-
-.builder-panel .branch-input {
-  max-width: 110px;
-}
-
-.primary-btn {
-  background: var(--accent);
-  color: #ffffff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.primary-btn:hover {
-  filter: brightness(1.1);
+  flex-shrink: 0;
 }
